@@ -1041,7 +1041,7 @@
                             <span style="font-weight: 600;">CHEESE (BSC)</span>
                         </div>
                         <div style="font-size: 0.875rem; color: var(--text-secondary);">
-                            Bridge between CHEESE Blockchain and BSC
+                            Bridge NCH (native) to wNCH (BSC wrapped)
                         </div>
                     </div>
 
@@ -1053,13 +1053,13 @@
 
                     <!-- Bridge Direction Toggle -->
                     <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
-                        <button class="tab-btn active" id="nchToCheeseBtn" onclick="setBridgeDirection('nch-to-cheese')"
+                        <button class="tab-btn active" id="nchToCheeseBtn" onclick="setBridgeDirection('nch-to-wnch')"
                             style="flex: 1; padding: 0.75rem;">
-                            NCH → CHEESE (BSC)
+                            NCH → wNCH (BSC)
                         </button>
-                        <button class="tab-btn" id="cheeseToNchBtn" onclick="setBridgeDirection('cheese-to-nch')"
+                        <button class="tab-btn" id="cheeseToNchBtn" onclick="setBridgeDirection('wnch-to-nch')"
                             style="flex: 1; padding: 0.75rem;">
-                            CHEESE (BSC) → NCH
+                            wNCH (BSC) → NCH
                         </button>
                     </div>
 
@@ -1100,7 +1100,7 @@
                                     <img src="nch-logo.png" id="bridgeToIcon"
                                         style="width: 24px; height: 24px; border-radius: 50%;">
                                 </div>
-                                <span class="token-symbol" id="bridgeToSymbol">CHEESE</span>
+                                <span class="token-symbol" id="bridgeToSymbol">wNCH</span>
                             </div>
                         </div>
                     </div>
@@ -2191,16 +2191,16 @@
         // BRIDGE FUNCTIONS
         // ==========================================
 
-        let bridgeDirection = 'nch-to-cheese'; // or 'cheese-to-nch'
+        let bridgeDirection = 'nch-to-wnch'; // NCH (native) to wNCH (BSC wrapped)
 
         async function updateBridgeRate() {
             try {
-                // NCH and CHEESE have 1:1 rate on the bridge
-                const rate = '1 NCH = 1 CHEESE (BSC)';
+                // NCH and wNCH have 1:1 rate on the bridge (wrapping/unwrapping)
+                const rate = '1 NCH = 1 wNCH (BSC)';
                 document.getElementById('bridgeRate').textContent = rate;
             } catch (error) {
                 console.error('Bridge rate error:', error);
-                document.getElementById('bridgeRate').textContent = '1 NCH = 1 CHEESE (BSC)';
+                document.getElementById('bridgeRate').textContent = '1 NCH = 1 wNCH (BSC)';
             }
         }
 
@@ -2211,17 +2211,17 @@
             document.getElementById('nchToCheeseBtn').classList.remove('active');
             document.getElementById('cheeseToNchBtn').classList.remove('active');
 
-            if (direction === 'nch-to-cheese') {
+            if (direction === 'nch-to-wnch') {
                 document.getElementById('nchToCheeseBtn').classList.add('active');
                 document.getElementById('bridgeFromLabel').textContent = 'From (CHEESE Blockchain)';
                 document.getElementById('bridgeToLabel').textContent = 'To (BSC Network)';
                 document.getElementById('bridgeFromSymbol').textContent = 'NCH';
-                document.getElementById('bridgeToSymbol').textContent = 'CHEESE';
+                document.getElementById('bridgeToSymbol').textContent = 'wNCH';
             } else {
                 document.getElementById('cheeseToNchBtn').classList.add('active');
                 document.getElementById('bridgeFromLabel').textContent = 'From (BSC Network)';
                 document.getElementById('bridgeToLabel').textContent = 'To (CHEESE Blockchain)';
-                document.getElementById('bridgeFromSymbol').textContent = 'CHEESE';
+                document.getElementById('bridgeFromSymbol').textContent = 'wNCH';
                 document.getElementById('bridgeToSymbol').textContent = 'NCH';
             }
 
@@ -2229,10 +2229,10 @@
         }
 
         function toggleBridgeDirection() {
-            if (bridgeDirection === 'nch-to-cheese') {
-                setBridgeDirection('cheese-to-nch');
+            if (bridgeDirection === 'nch-to-wnch') {
+                setBridgeDirection('wnch-to-nch');
             } else {
-                setBridgeDirection('nch-to-cheese');
+                setBridgeDirection('nch-to-wnch');
             }
         }
 
