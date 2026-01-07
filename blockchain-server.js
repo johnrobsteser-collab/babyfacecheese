@@ -8,18 +8,42 @@
 
 // CRITICAL: Set Firestore credentials BEFORE any imports
 // This ensures the credentials are available when @google-cloud/firestore initializes
-// LOCAL DEV: Set path to local service account file
-// Using path.resolve to handle Windows paths correctly
+// PRIORITY ORDER:
+// 1. GOOGLE_APPLICATION_CREDENTIALS_JSON env var (Railway/cloud - contains JSON string)
+// 2. Local service-account.json file
+// 3. Fallback dev path
 const path = require('path');
 const fs = require('fs');
-// Check for local service account first (Railway Deployment)
-const localCreds = path.resolve(__dirname, './service-account.json');
-if (fs.existsSync(localCreds)) {
-    process.env.GOOGLE_APPLICATION_CREDENTIALS = localCreds;
-    console.log('🔑 Loaded credentials from local file');
-} else if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    process.env.GOOGLE_APPLICATION_CREDENTIALS = path.resolve(__dirname, '../CLEAN DEX Cloud/firebase-service-account.json');
-    console.log('🔑 Set dev credentials path');
+const os = require('os');
+
+// Option 1: Check for JSON credentials in env var (for Railway/cloud deployment)
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+    try {
+        // Write the JSON to a temp file so Google Cloud SDK can use it
+        const tempCredsPath = path.join(os.tmpdir(), 'service-account-temp.json');
+        fs.writeFileSync(tempCredsPath, process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+        process.env.GOOGLE_APPLICATION_CREDENTIALS = tempCredsPath;
+        console.log('🔑 Loaded credentials from GOOGLE_APPLICATION_CREDENTIALS_JSON env var');
+    } catch (e) {
+        console.error('❌ Failed to parse GOOGLE_APPLICATION_CREDENTIALS_JSON:', e.message);
+    }
+}
+// Option 2: Check for local service account file
+else {
+    const localCreds = path.resolve(__dirname, './service-account.json');
+    if (fs.existsSync(localCreds)) {
+        process.env.GOOGLE_APPLICATION_CREDENTIALS = localCreds;
+        console.log('🔑 Loaded credentials from local file');
+    } else if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+        // Option 3: Fallback dev path
+        const devCreds = path.resolve(__dirname, '../CLEAN DEX Cloud/firebase-service-account.json');
+        if (fs.existsSync(devCreds)) {
+            process.env.GOOGLE_APPLICATION_CREDENTIALS = devCreds;
+            console.log('🔑 Set dev credentials path');
+        } else {
+            console.warn('⚠️ No Firestore credentials found - will use SQLite fallback');
+        }
+    }
 }
 
 const express = require('express');

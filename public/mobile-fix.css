@@ -1,10 +1,17 @@
 /**
- * CHEESE DEX Mobile Responsive Fixes
- * Fixes horizontal overflow on mobile devices
+ * CHEESE Blockchain Mobile Responsive Fixes
+ * Fixes horizontal overflow, zoom issues, and box clustering on mobile devices
  * 
  * Author: Robert Terre
- * © 2025 All Rights Reserved
+ * © 2025-2026 All Rights Reserved
  */
+
+/* ===== CRITICAL: Prevent zoom on mobile ===== */
+html {
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
 
 /* Global Mobile Fixes */
 html,
@@ -17,189 +24,332 @@ body {
     box-sizing: border-box !important;
 }
 
-/* Container Fixes */
+/* ===== CONTAINER FIXES ===== */
 .container,
 .main-container,
 .dex-container,
 .swap-container,
 .pool-container,
-.section {
-    max-width: 100% !important;
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-    overflow-x: hidden !important;
-}
-
-/* Card Fixes */
-.card,
-.swap-card,
-.pool-card,
-.token-card,
-.stats-card {
-    max-width: 100% !important;
-    width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    overflow-x: hidden !important;
-}
-
-/* Input Fixes */
-input,
-select,
-button,
-.input-group,
-.swap-input,
-.amount-input {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-/* Table Fixes */
-table,
-.table-responsive,
-.pool-table,
-.transaction-table {
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    display: block !important;
-}
-
-/* Grid Fixes */
-.grid,
-.stats-grid,
-.feature-grid,
-.pool-grid {
+.section,
+.features,
+.ecosystem,
+.tokenomics,
+.ai-section,
+.roadmap {
     max-width: 100% !important;
     overflow-x: hidden !important;
 }
 
-/* Mobile Specific Styles */
+/* ===== MOBILE BREAKPOINT (768px and below) ===== */
 @media screen and (max-width: 768px) {
     body {
         font-size: 14px !important;
     }
 
-    .logo,
-    h1 {
+    /* ===== HERO SECTION ===== */
+    .hero {
+        flex-direction: column !important;
+        padding: 4rem 1rem !important;
+        text-align: center !important;
+        gap: 2rem !important;
+    }
+
+    .hero-content {
+        max-width: 100% !important;
+        padding: 0 1rem !important;
+    }
+
+    .hero h1 {
+        font-size: 2rem !important;
+    }
+
+    .hero p {
+        font-size: 1rem !important;
+    }
+
+    .hero-cta {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+
+    .hero-visual {
+        max-width: 100% !important;
+        padding: 0 1rem !important;
+    }
+
+    .cheese-3d {
+        width: 200px !important;
+        height: 200px !important;
+    }
+
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 1rem !important;
+        padding: 1rem !important;
+    }
+
+    .stat-box {
+        flex: 1 1 45% !important;
+        min-width: 140px !important;
+        max-width: 48% !important;
+    }
+
+    /* ===== FEATURE GRID - SINGLE COLUMN ON MOBILE ===== */
+    .features-grid,
+    .feature-grid,
+    [class*="features"]>div,
+    .features>div:not(.section-header) {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    .feature-card {
+        padding: 1.5rem !important;
+        margin-bottom: 1rem !important;
+        border-radius: 20px !important;
+    }
+
+    .feature-icon {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .feature-card h3 {
+        font-size: 1.2rem !important;
+    }
+
+    .feature-number {
+        font-size: 3rem !important;
+    }
+
+    /* ===== ECOSYSTEM GRID - SINGLE COLUMN ===== */
+    .ecosystem-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    .eco-card {
+        padding: 2rem 1.5rem !important;
+        border-radius: 25px !important;
+    }
+
+    .eco-icon {
+        font-size: 3rem !important;
+    }
+
+    .eco-card h3 {
+        font-size: 1.3rem !important;
+    }
+
+    /* ===== TOKENOMICS - STACK VERTICALLY ===== */
+    .token-main {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+
+    .token-visual {
+        height: 300px !important;
+    }
+
+    .ring-1 {
+        width: 120px !important;
+        height: 120px !important;
+    }
+
+    .ring-2 {
+        width: 180px !important;
+        height: 180px !important;
+    }
+
+    .ring-3 {
+        width: 240px !important;
+        height: 240px !important;
+    }
+
+    .token-center .big-number {
+        font-size: 3rem !important;
+    }
+
+    /* ===== ALLOCATIONS ===== */
+    .allocation-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .allocation-item {
+        padding: 1rem !important;
+    }
+
+    /* ===== AI FEATURES GRID ===== */
+    .ai-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .ai-item {
+        padding: 1rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* ===== ROADMAP ===== */
+    .roadmap-track {
+        flex-direction: column !important;
+    }
+
+    .roadmap-card {
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* ===== SECTION HEADERS ===== */
+    .section-header h2 {
         font-size: 1.8rem !important;
     }
 
-    h2 {
-        font-size: 1.4rem !important;
+    .section-header p {
+        font-size: 1rem !important;
+        padding: 0 1rem !important;
     }
 
-    h3 {
-        font-size: 1.2rem !important;
-    }
-
-    /* Navigation */
-    .nav-tabs,
-    .nav-buttons,
-    .tab-container {
-        flex-direction: column !important;
-        gap: 8px !important;
-    }
-
-    .tab-btn,
-    .nav-btn {
-        width: 100% !important;
-        max-width: 300px !important;
-        margin: 0 auto !important;
-    }
-
-    /* Swap Form */
-    .swap-form,
-    .liquidity-form,
-    .form-container {
-        padding: 15px !important;
-    }
-
-    .swap-input-container,
-    .input-wrapper {
-        flex-direction: column !important;
-        gap: 10px !important;
-    }
-
-    .token-select,
-    .token-dropdown {
-        width: 100% !important;
-    }
-
-    /* Stats */
-    .stats-grid {
-        grid-template-columns: 1fr 1fr !important;
-        gap: 10px !important;
-    }
-
-    .stat-item {
-        padding: 10px !important;
-    }
-
-    .stat-value {
-        font-size: 1.2rem !important;
-    }
-
-    /* Buttons */
-    .btn,
-    button,
-    .action-btn {
-        padding: 12px 20px !important;
+    /* ===== BUTTONS ===== */
+    .btn {
+        padding: 1rem 1.5rem !important;
         font-size: 0.9rem !important;
-        width: 100% !important;
         max-width: 280px !important;
+        width: auto !important;
     }
 
-    /* Pools */
-    .pool-list,
-    .position-list {
+    /* ===== PADDING FIX FOR ALL SECTIONS ===== */
+    .features,
+    .ecosystem,
+    .tokenomics,
+    .ai-section,
+    .roadmap,
+    .cta {
+        padding: 3rem 1rem !important;
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav-container,
+    nav {
+        padding: 0.75rem 1rem !important;
+    }
+
+    .nav-logo {
+        font-size: 1.2rem !important;
+    }
+
+    .nav-links {
+        display: none !important;
+    }
+
+    .nav-actions {
+        gap: 0.5rem !important;
+    }
+
+    .nav-actions .btn {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+
+    footer {
+        padding: 2rem 1rem !important;
+    }
+}
+
+/* ===== EXTRA SMALL SCREENS (phones in portrait) ===== */
+@media screen and (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.6rem !important;
+    }
+
+    .cheese-3d {
+        width: 150px !important;
+        height: 150px !important;
+    }
+
+    .stat-box {
+        flex: 1 1 100% !important;
         max-width: 100% !important;
     }
 
-    .pool-item,
-    .position-item {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 10px !important;
-        padding: 15px !important;
-    }
-
-    /* Footer */
-    footer {
-        padding: 15px !important;
-    }
-
-    footer .container>div {
+    .allocation-grid,
+    .ai-grid {
         grid-template-columns: 1fr !important;
-    }
-}
-
-/* Extra Small Screens (phones in portrait) */
-@media screen and (max-width: 480px) {
-
-    .logo,
-    h1 {
-        font-size: 1.5rem !important;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr !important;
-    }
-
-    .card,
-    .swap-card {
-        padding: 12px !important;
     }
 
     .btn {
-        padding: 10px 16px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .feature-card,
+    .eco-card {
+        padding: 1.25rem !important;
+    }
+
+    .section-header h2 {
+        font-size: 1.5rem !important;
     }
 }
 
-/* Prevent horizontal scroll from animations */
-body::before,
-body::after,
+/* ===== PREVENT ANIMATIONS FROM CAUSING OVERFLOW ===== */
+.stars-container,
+.nebula,
 .background-animation,
-.cheese-pattern {
+.cheese-pattern,
+body::before,
+body::after {
     max-width: 100vw !important;
     overflow: hidden !important;
+}
+
+/* ===== FIX GRID ELEMENTS EXPLICITLY ===== */
+.features>div,
+.ecosystem>div,
+.ai-features>div {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* ===== CARD OVERFLOW FIXES ===== */
+.card,
+.feature-card,
+.eco-card,
+.swap-card,
+.pool-card,
+.token-card,
+.stats-card,
+.roadmap-card {
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+/* ===== INPUT AND FORM FIXES ===== */
+input,
+select,
+button,
+textarea {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* ===== TABLE FIXES ===== */
+table,
+.table-responsive {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    display: block !important;
 }
