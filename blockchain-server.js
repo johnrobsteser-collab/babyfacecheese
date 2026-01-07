@@ -9,15 +9,28 @@
 // CRITICAL: Set Firestore credentials BEFORE any imports
 // This ensures the credentials are available when @google-cloud/firestore initializes
 // PRIORITY ORDER:
-// 1. GOOGLE_APPLICATION_CREDENTIALS_JSON env var (Railway/cloud - contains JSON string)
-// 2. Local service-account.json file
-// 3. Fallback dev path
+// 1. GOOGLE_APPLICATION_CREDENTIALS_BASE64 env var (Railway/cloud - base64 encoded JSON)
+// 2. GOOGLE_APPLICATION_CREDENTIALS_JSON env var (Railway/cloud - raw JSON string)
+// 3. Local service-account.json file
+// 4. Fallback dev path
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
 
-// Option 1: Check for JSON credentials in env var (for Railway/cloud deployment)
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+// Option 1: Check for BASE64 encoded credentials (preferred for Railway - no special char issues)
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64) {
+    try {
+        const jsonContent = Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('utf8');
+        const tempCredsPath = path.join(os.tmpdir(), 'service-account-temp.json');
+        fs.writeFileSync(tempCredsPath, jsonContent);
+        process.env.GOOGLE_APPLICATION_CREDENTIALS = tempCredsPath;
+        console.log('🔑 Loaded credentials from GOOGLE_APPLICATION_CREDENTIALS_BASE64 env var');
+    } catch (e) {
+        console.error('❌ Failed to decode GOOGLE_APPLICATION_CREDENTIALS_BASE64:', e.message);
+    }
+}
+// Option 2: Check for JSON credentials in env var (for Railway/cloud deployment)
+else if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
     try {
         // Write the JSON to a temp file so Google Cloud SDK can use it
         const tempCredsPath = path.join(os.tmpdir(), 'service-account-temp.json');
