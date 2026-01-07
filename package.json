@@ -1,0 +1,47 @@
+{
+  "name": "cheese-blockchain",
+  "version": "1.0.0",
+  "description": "CHEESE Native Blockchain - Complete System",
+  "main": "blockchain-server.js",
+  "scripts": {
+    "start": "node blockchain-server.js",
+    "wallet": "node server.js",
+    "dev": "node blockchain-server.js"
+  },
+  "engines": {
+    "node": "20.x"
+  },
+  "keywords": [
+    "blockchain",
+    "wallet",
+    "crypto",
+    "cheese"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@chainsafe/libp2p-noise": "^17.0.0",
+    "@google-cloud/firestore": "^7.1.0",
+    "@google-cloud/storage": "^7.7.0",
+    "@libp2p/gossipsub": "^15.0.11",
+    "@libp2p/kad-dht": "^16.1.2",
+    "@libp2p/tcp": "^11.0.9",
+    "@libp2p/websockets": "^10.1.2",
+    "bip39": "^3.1.0",
+    "bn.js": "^5.2.1",
+    "brain.js": "^2.0.0-beta.24",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
+    "elliptic": "^6.6.1",
+    "ethers": "^6.16.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.2.1",
+    "firebase-admin": "^13.6.0",
+    "hdkey": "^2.1.0",
+    "libp2p": "^3.1.2",
+    "qrcode": "^1.5.4",
+    "sql.js": "^1.13.0",
+    "web3": "^4.16.0",
+    "ws": "^8.14.2"
+  }
+}

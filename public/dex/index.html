@@ -1,0 +1,2710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🧀 CHEESE DEX - Decentralized Exchange</title>
+
+    <meta name="theme-color" content="#FFD700">
+    <meta name="description" content="Trade tokens on the CHEESE blockchain decentralized exchange">
+
+    <!-- PWA Support -->
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./nch-logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CHEESE DEX">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --cheese-gold: #FFD700;
+            --cheese-orange: #FF8C00;
+            --cheese-brown: #8B4513;
+            --bg-dark: #050508;
+            --bg-card: rgba(20, 20, 35, 0.65);
+            --bg-card-hover: rgba(30, 30, 50, 0.75);
+            --border-color: rgba(255, 215, 0, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --success: #00ffaa;
+            --error: #ff4757;
+            --warning: #ffa502;
+            --gradient-gold: linear-gradient(135deg, #FFD700 0%, #FF8C00 50%, #FFD700 100%);
+            --gradient-dark: linear-gradient(180deg, #050508 0%, #101018 100%);
+            --glow-gold: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #050508 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+            width: 100% !important;
+        }
+
+        /* CRITICAL MOBILE FIX - Force all elements to fit screen */
+        html {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+        }
+
+        *,
+        *::before,
+        *::after {
+            max-width: 100vw !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+
+        img,
+        video,
+        iframe,
+        embed,
+        object {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Animated Background */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 165, 0, 0.08) 0%, transparent 50%),
+                var(--bg-dark);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(20, 20, 31, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .connect-btn {
+            background: var(--gradient-gold);
+            color: var(--bg-dark);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .connected {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            width: fit-content;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--gradient-gold);
+            color: var(--bg-dark);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--cheese-gold);
+        }
+
+        /* Cards - Glassmorphism */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:hover {
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /* Swap Interface */
+        .swap-container {
+            max-width: 480px;
+        }
+
+        .token-input-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .token-input-box:focus-within {
+            border-color: var(--cheese-gold);
+        }
+
+        .token-input-label {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .token-input-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .token-amount {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.75rem;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .token-amount::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .token-select {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .token-select:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--cheese-gold);
+        }
+
+        .token-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .token-symbol {
+            font-weight: 600;
+        }
+
+        .swap-arrow {
+            display: flex;
+            justify-content: center;
+            margin: -0.5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .swap-arrow-btn {
+            background: var(--bg-card);
+            border: 3px solid var(--border-color);
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+        }
+
+        .swap-arrow-btn:hover {
+            background: var(--cheese-gold);
+            color: var(--bg-dark);
+            border-color: var(--cheese-gold);
+            transform: rotate(180deg);
+        }
+
+        /* Swap Details */
+        .swap-details {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .swap-detail-row {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .swap-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .swap-detail-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            background: var(--gradient-gold);
+            background-size: 200% auto;
+            color: #000;
+            border: none;
+            padding: 1rem;
+            border-radius: 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: shine 3s infinite linear;
+        }
+
+        @keyframes shine {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Pool List */
+        .pool-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .pool-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 100px;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .pool-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+            border-color: var(--cheese-gold);
+            transform: translateX(5px);
+        }
+
+        .pool-pair {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pool-icons {
+            display: flex;
+        }
+
+        .pool-icons .token-icon:nth-child(2) {
+            margin-left: -8px;
+        }
+
+        .pool-name {
+            font-weight: 600;
+        }
+
+        .pool-stat {
+            text-align: center;
+        }
+
+        .pool-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .pool-stat-value {
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .btn-small {
+            background: var(--gradient-gold);
+            color: var(--bg-dark);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Chart Panel */
+        .chart-panel {
+            grid-column: 2;
+            grid-row: 1 / 3;
+        }
+
+        @media (max-width: 1024px) {
+            .chart-panel {
+                grid-column: 1;
+                grid-row: auto;
+            }
+        }
+
+        .chart-container {
+            height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #00d4aa, #00a085);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ff4757, #c44040);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Slippage Settings */
+        .settings-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .slippage-btn {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slippage-btn.active {
+            background: var(--cheese-gold);
+            color: var(--bg-dark);
+            border-color: var(--cheese-gold);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+
+            html,
+            body {
+                overflow-x: hidden !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+            }
+
+            .header {
+                padding: 0.75rem 1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo-icon {
+                font-size: 1.5rem;
+            }
+
+            .connect-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+                grid-template-columns: 1fr !important;
+                gap: 1rem;
+                max-width: 100% !important;
+                overflow-x: hidden !important;
+            }
+
+            .left-panel {
+                max-width: 100% !important;
+            }
+
+            .tab-nav {
+                width: 100% !important;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .tab-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .card,
+            .swap-container {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 1rem;
+            }
+
+            .token-amount {
+                font-size: 1.25rem;
+                min-width: 0;
+            }
+
+            .token-input-row {
+                flex-wrap: nowrap;
+            }
+
+            .token-select {
+                flex-shrink: 0;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .token-symbol {
+                font-size: 0.875rem;
+            }
+
+            .pool-item {
+                grid-template-columns: 1fr !important;
+                text-align: center;
+                gap: 0.75rem;
+            }
+
+            .pool-pair {
+                justify-content: center;
+            }
+
+            .pool-stat {
+                display: flex;
+                justify-content: space-between;
+                padding: 0.25rem 0;
+            }
+
+            .btn-small {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .chart-panel {
+                order: -1;
+            }
+
+            .chart-container {
+                height: 200px;
+            }
+
+            .notification {
+                left: 10px;
+                right: 10px;
+                max-width: calc(100% - 20px);
+            }
+
+            .modal {
+                margin: 0.5rem;
+                max-width: calc(100% - 1rem);
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 1rem;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.5rem;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            .connect-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .main-container {
+                padding: 0.5rem;
+            }
+
+            .tab-nav {
+                gap: 0.25rem;
+            }
+
+            .tab-btn {
+                padding: 0.4rem 0.5rem;
+                font-size: 0.7rem;
+            }
+
+            .card {
+                padding: 0.75rem;
+                border-radius: 16px;
+            }
+
+            .token-amount {
+                font-size: 1rem;
+            }
+
+            .btn-primary {
+                padding: 0.75rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Add Liquidity Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            max-width: 480px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* Convert Token Dropdown */
+        .convert-token-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .convert-token-option:hover {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--cheese-gold);
+        }
+
+        .convert-token-option:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .convert-token-option:last-child {
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Hidden by default */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Ultra-Premium Enhancements */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .background-animation {
+            display: none;
+        }
+
+        /* Disable old CSS bg in favor of Canvas */
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-container,
+        .header {
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .connected {
+            animation: pulse-green 2s infinite;
+            box-shadow: 0 0 15px rgba(0, 255, 170, 0.4);
+            background: var(--success);
+            color: #000;
+            font-weight: 800;
+        }
+
+        @keyframes pulse-green {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 170, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 255, 170, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 170, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-animation"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">🧀</span>
+            <span>CHEESE DEX</span>
+        </div>
+        <button class="connect-btn" id="connectBtn" onclick="connectWallet()">
+            <span>🔗</span>
+            <span id="connectText">Connect Wallet</span>
+        </button>
+    </header>
+
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; 
+         background: linear-gradient(135deg, #FFD700, #FF8C00); padding: 12px 15px; z-index: 9999;
+         box-shadow: 0 -4px 20px rgba(0,0,0,0.3); animation: slideUpBanner 0.5s ease;">
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; max-width: 600px; margin: 0 auto;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 2rem;">🧀</span>
+                <div>
+                    <div style="font-weight: 700; color: #000; font-size: 0.95em;">Install CHEESE DEX</div>
+                    <div style="font-size: 0.8em; color: #333;">Trade faster with the installed app</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button id="pwa-install-btn" style="background: #000; color: #FFD700; border: none; 
+                        padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer;">Install</button>
+                <button id="pwa-dismiss-btn" style="background: transparent; border: 2px solid #000; color: #000;
+                        padding: 6px 12px; border-radius: 20px; font-weight: 600; cursor: pointer;">Later</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes slideUpBanner {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <!-- Tab Navigation -->
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="swap">🔄 Swap</button>
+                <button class="tab-btn" data-tab="bridge">🌉 Bridge</button>
+                <button class="tab-btn" data-tab="convert">🔁 Convert</button>
+                <button class="tab-btn" data-tab="pools">💧 Pools</button>
+                <button class="tab-btn" data-tab="positions">📊 Positions</button>
+                <button class="tab-btn" data-tab="p2p">🤝 P2P</button>
+            </nav>
+
+            <!-- Swap Tab -->
+            <div class="tab-content" id="swap-tab">
+                <div class="card swap-container">
+                    <div class="card-header">
+                        <h2 class="card-title">Swap</h2>
+                        <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+                    </div>
+
+                    <!-- Slippage Settings -->
+                    <div class="settings-row hidden" id="slippageSettings">
+                        <span style="color: var(--text-secondary); font-size: 0.875rem;">Slippage:</span>
+                        <button class="slippage-btn active" data-slippage="0.1">0.1%</button>
+                        <button class="slippage-btn" data-slippage="0.5">0.5%</button>
+                        <button class="slippage-btn" data-slippage="1">1%</button>
+                    </div>
+
+                    <!-- From Token -->
+                    <div class="token-input-box">
+                        <div class="token-input-label">
+                            <span>From</span>
+                            <span>Balance: <span id="fromBalance">0.00</span></span>
+                        </div>
+                        <div class="token-input-row">
+                            <input type="number" class="token-amount" id="fromAmount" placeholder="0.0"
+                                oninput="updateQuote()">
+                            <div class="token-select" id="fromToken" onclick="openTokenSelect('from')">
+                                <div class="token-icon" style="background: var(--cheese-gold);"><img src="nch-logo.png"
+                                        style="width: 24px; height: 24px; border-radius: 50%;"></div>
+                                <span class="token-symbol">NCH</span>
+                                <span>▼</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Swap Arrow -->
+                    <div class="swap-arrow">
+                        <button class="swap-arrow-btn" onclick="swapTokenPositions()">↕</button>
+                    </div>
+
+                    <!-- To Token -->
+                    <div class="token-input-box">
+                        <div class="token-input-label">
+                            <span>To</span>
+                            <span>Balance: <span id="toBalance">0.00</span></span>
+                        </div>
+                        <div class="token-input-row">
+                            <input type="number" class="token-amount" id="toAmount" placeholder="0.0" readonly>
+                            <div class="token-select" id="toToken" onclick="openTokenSelect('to')">
+                                <div class="token-icon" style="background: var(--success);">💵</div>
+                                <span class="token-symbol">USDT</span>
+                                <span>▼</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Swap Details -->
+                    <div class="swap-details" id="swapDetails">
+                        <div class="swap-detail-row">
+                            <span>Rate</span>
+                            <span class="swap-detail-value" id="swapRate">1 NCH = 1.00 USDT</span>
+                        </div>
+                        <div class="swap-detail-row">
+                            <span>Price Impact</span>
+                            <span class="swap-detail-value" id="priceImpact">
+                                < 0.01%</span>
+                        </div>
+                        <div class="swap-detail-row">
+                            <span>Fee (0.3%)</span>
+                            <span class="swap-detail-value" id="swapFee">0.00 NCH</span>
+                        </div>
+                        <div class="swap-detail-row">
+                            <span>Minimum Received</span>
+                            <span class="swap-detail-value" id="minReceived">0.00 USDT</span>
+                        </div>
+                    </div>
+
+                    <!-- Swap Button -->
+                    <button class="btn-primary" id="swapBtn" onclick="executeSwap()">
+                        Swap
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bridge Tab -->
+            <div class="tab-content hidden" id="bridge-tab">
+                <div class="card swap-container">
+                    <div class="card-header">
+                        <h2 class="card-title">🌉 Cross-Chain Bridge</h2>
+                    </div>
+
+                    <!-- Bridge Info Banner -->
+                    <div style="background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(138,43,226,0.1)); 
+                                border: 1px solid var(--cheese-gold); border-radius: 12px; 
+                                padding: 1rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <img src="nch-logo.png" style="width: 24px; height: 24px; border-radius: 50%;">
+                            <span style="font-weight: 600;">NCH</span>
+                            <span style="color: var(--text-secondary);">↔</span>
+                            <img src="nch-logo.png" style="width: 24px; height: 24px; border-radius: 50%;">
+                            <span style="font-weight: 600;">CHEESE (BSC)</span>
+                        </div>
+                        <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                            Bridge between CHEESE Blockchain and BSC
+                        </div>
+                    </div>
+
+                    <!-- Exchange Rate Display -->
+                    <div class="info-row" style="margin-bottom: 1rem;">
+                        <span style="color: var(--text-secondary);">Exchange Rate</span>
+                        <span id="bridgeRate" style="color: var(--cheese-gold); font-weight: 600;">Loading...</span>
+                    </div>
+
+                    <!-- Bridge Direction Toggle -->
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                        <button class="tab-btn active" id="nchToCheeseBtn" onclick="setBridgeDirection('nch-to-cheese')"
+                            style="flex: 1; padding: 0.75rem;">
+                            NCH → CHEESE (BSC)
+                        </button>
+                        <button class="tab-btn" id="cheeseToNchBtn" onclick="setBridgeDirection('cheese-to-nch')"
+                            style="flex: 1; padding: 0.75rem;">
+                            CHEESE (BSC) → NCH
+                        </button>
+                    </div>
+
+                    <!-- Bridge From -->
+                    <div class="token-input-box">
+                        <div class="token-input-label">
+                            <span id="bridgeFromLabel">From (CHEESE Blockchain)</span>
+                            <span>Balance: <span id="bridgeFromBalance">0.00</span></span>
+                        </div>
+                        <div class="token-input-row">
+                            <input type="number" class="token-amount" id="bridgeAmount" placeholder="0.0"
+                                oninput="updateBridgeQuote()">
+                            <div class="token-select" style="cursor: default;">
+                                <div class="token-icon" style="background: var(--cheese-gold);">
+                                    <img src="nch-logo.png" id="bridgeFromIcon"
+                                        style="width: 24px; height: 24px; border-radius: 50%;">
+                                </div>
+                                <span class="token-symbol" id="bridgeFromSymbol">NCH</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="swap-arrow">
+                        <button class="swap-arrow-btn" onclick="toggleBridgeDirection()">↓</button>
+                    </div>
+
+                    <!-- Bridge To -->
+                    <div class="token-input-box">
+                        <div class="token-input-label">
+                            <span id="bridgeToLabel">To (BSC Network)</span>
+                            <span>You Receive:</span>
+                        </div>
+                        <div class="token-input-row">
+                            <input type="number" class="token-amount" id="bridgeReceive" placeholder="0.0" readonly>
+                            <div class="token-select" style="cursor: default;">
+                                <div class="token-icon" style="background: var(--cheese-gold);">
+                                    <img src="nch-logo.png" id="bridgeToIcon"
+                                        style="width: 24px; height: 24px; border-radius: 50%;">
+                                </div>
+                                <span class="token-symbol" id="bridgeToSymbol">CHEESE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bridge Details -->
+                    <div class="swap-details" style="margin-top: 1rem;">
+                        <div class="swap-detail-row">
+                            <span>Bridge Fee (0.5%)</span>
+                            <span class="swap-detail-value" id="bridgeFee">0.00</span>
+                        </div>
+                        <div class="swap-detail-row">
+                            <span>NCH Price</span>
+                            <span class="swap-detail-value">$1.00</span>
+                        </div>
+                        <div class="swap-detail-row">
+                            <span>CHEESE Price (Live)</span>
+                            <span class="swap-detail-value" id="cheeseLivePrice">Loading...</span>
+                        </div>
+                    </div>
+
+                    <!-- BSC Address Input -->
+                    <div style="margin-top: 1rem;">
+                        <label
+                            style="display: block; color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem;">
+                            Destination Address (BSC)
+                        </label>
+                        <input type="text" id="bridgeDestAddress" placeholder="0x... your BSC wallet address" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color);
+                                      background: var(--bg-dark); color: white; font-size: 0.875rem;">
+                    </div>
+
+                    <!-- Bridge Button -->
+                    <button class="btn-primary" id="bridgeBtn" onclick="executeBridge()" style="margin-top: 1.5rem;">
+                        🌉 Bridge Tokens
+                    </button>
+                </div>
+            </div>
+
+            <!-- Convert Tab - BSC Tokens to wNCH/NCH -->
+            <div class="tab-content hidden" id="convert-tab">
+                <div class="card swap-container">
+                    <div class="card-header">
+                        <h2 class="card-title">🔁 Convert BSC Tokens</h2>
+                    </div>
+
+                    <!-- Convert Info Banner -->
+                    <div style="background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(255,215,0,0.1)); 
+                                border: 1px solid var(--success); border-radius: 12px; 
+                                padding: 1rem; margin-bottom: 1.5rem;">
+                        <div style="font-weight: 600; color: var(--success); margin-bottom: 0.5rem;">
+                            💱 Convert ANY BSC Token to wNCH
+                        </div>
+                        <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                            Real-time prices from CoinGecko. Convert stuck BSC assets to wNCH instantly.
+                        </div>
+                    </div>
+
+                    <!-- From Token (BSC) -->
+                    <div class="token-input-box">
+                        <div class="token-input-label">
+                            <span>From (BSC Token)</span>
+                            <span>Your Balance: <span id="convertFromBalance">0.00</span></span>
+                        </div>
+                        <div class="token-input-row">
+                            <input type="number" class="token-amount" id="convertAmount" placeholder="0.0"
+                                oninput="updateConvertQuote()">
+                            <!-- Custom Token Selector with Real Logos -->
+                            <div class="token-select" id="convertTokenSelector" onclick="toggleConvertTokenDropdown()">
+                                <img id="convertSelectedIcon" src="bnb-logo.png"
+                                    style="width: 28px; height: 28px; border-radius: 50%;">
+                                <span class="token-symbol" id="convertSelectedSymbol">BNB</span>
+                                <span>▼</span>
+                            </div>
+                            <input type="hidden" id="convertFromToken" value="BNB">
+                        </div>
+                        <!-- Token Dropdown Menu -->
+                        <div id="convertTokenDropdown" class="hidden" style="position: absolute; background: var(--bg-card); 
+                             border: 1px solid var(--cheese-gold); border-radius: 12px; margin-top: 0.5rem; 
+                             max-height: 300px; overflow-y: auto; z-index: 100; width: 200px; right: 1rem;">
+                            <div class="convert-token-option" onclick="selectConvertToken('BNB', 'bnb-logo.png')">
+                                <img src="bnb-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> BNB
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('USDT', 'usdt-logo.png')">
+                                <img src="usdt-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> USDT
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('ETH', 'eth-logo.png')">
+                                <img src="eth-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> ETH
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('BTC', 'btc-logo.png')">
+                                <img src="btc-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> BTC
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('SOL', 'sol-logo.png')">
+                                <img src="sol-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> SOL
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('DOGE', 'doge-logo.png')">
+                                <img src="doge-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> DOGE
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('SHIB', 'shib-logo.png')">
+                                <img src="shib-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> SHIB
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('MATIC', 'matic-logo.png')">
+                                <img src="matic-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> MATIC
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('LINK', 'link-logo.png')">
+                                <img src="link-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> LINK
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('UNI', 'uni-logo.png')">
+                                <img src="uni-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> UNI
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('PEPE', 'pepe-logo.png')">
+                                <img src="pepe-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> PEPE
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('XRP', 'xrp-logo.png')">
+                                <img src="xrp-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> XRP
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('ADA', 'ada-logo.png')">
+                                <img src="ada-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> ADA
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('AVAX', 'avax-logo.png')">
+                                <img src="avax-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> AVAX
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('DOT', 'dot-logo.png')">
+                                <img src="dot-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> DOT
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('LTC', 'ltc-logo.png')">
+                                <img src="ltc-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> LTC
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('TRX', 'trx-logo.png')">
+                                <img src="trx-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> TRX
+                            </div>
+                            <div class="convert-token-option" onclick="selectConvertToken('ATOM', 'atom-logo.png')">
+                                <img src="atom-logo.png" style="width: 24px; height: 24px; border-radius: 50%;"> ATOM
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Price Display -->
+                    <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.75rem; 
+                                margin: 0.5rem 0; text-align: center;">
+                        <span style="color: var(--text-secondary); font-size: 0.875rem;">Live Price: </span>
+                        <span id="convertLivePrice" style="color: var(--cheese-gold); font-weight: 600;">$0.00</span>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="swap-arrow">
+                        <div class="swap-arrow-btn" style="cursor: default;">→</div>
+                    </div>
+
+                    <!-- To Token (wNCH) -->
+                    <div class="token-input-box">
+                        <div class="token-input-label">
+                            <span>To (wNCH)</span>
+                            <span>You Receive:</span>
+                        </div>
+                        <div class="token-input-row">
+                            <input type="number" class="token-amount" id="convertToAmount" placeholder="0.0" readonly>
+                            <div class="token-select" style="cursor: default;">
+                                <div class="token-icon" style="background: var(--cheese-gold);">
+                                    <img src="nch-logo.png" style="width: 24px; height: 24px; border-radius: 50%;">
+                                </div>
+                                <span class="token-symbol">wNCH</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Convert Details -->
+                    <div class="swap-details" style="margin-top: 1rem;">
+                        <div class="swap-detail-row">
+                            <span>Conversion Rate</span>
+                            <span class="swap-detail-value" id="convertRate">1 BNB = 0 wNCH</span>
+                        </div>
+                        <div class="swap-detail-row">
+                            <span>USD Value</span>
+                            <span class="swap-detail-value" id="convertUsdValue">$0.00</span>
+                        </div>
+                        <div class="swap-detail-row">
+                            <span>wNCH Price</span>
+                            <span class="swap-detail-value">$1.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Convert Button -->
+                    <button class="btn-primary" id="convertBtn" onclick="executeConvert()" style="margin-top: 1.5rem;">
+                        🔁 Convert to wNCH
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pools Tab -->
+            <div class="tab-content hidden" id="pools-tab">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Liquidity Pools</h2>
+                        <button class="btn-small" onclick="openCreatePool()">+ Create Pool</button>
+                    </div>
+
+                    <div class="pool-list" id="poolList">
+                        <!-- Pools loaded dynamically from API -->
+                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
+                            Loading pools...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Positions Tab -->
+            <div class="tab-content hidden" id="positions-tab">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Your Positions</h2>
+                    </div>
+
+                    <div id="positionsList">
+                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
+                            Connect wallet to view your positions
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- P2P Tab - Peer to Peer Trading -->
+            <div class="tab-content hidden" id="p2p-tab">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🤝 P2P Trading</h2>
+                        <button class="btn-small" onclick="openCreateP2POrder()">+ Create Order</button>
+                    </div>
+
+                    <!-- P2P Info Banner -->
+                    <div style="background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(255,215,0,0.1)); 
+                                border: 1px solid var(--cheese-gold); border-radius: 12px; 
+                                padding: 1rem; margin-bottom: 1.5rem;">
+                        <div style="font-weight: 600; color: var(--cheese-gold); margin-bottom: 0.5rem;">
+                            🤝 Trade Directly with Other Users
+                        </div>
+                        <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                            No intermediaries. Set your own price. Escrow-protected trades.
+                        </div>
+                    </div>
+
+                    <!-- P2P Tabs: Buy / Sell -->
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <button class="slippage-btn active" id="p2pBuyTab" onclick="switchP2PTab('buy')"
+                            style="flex: 1; background: var(--success); color: #000;">🟢 Buy NCH</button>
+                        <button class="slippage-btn" id="p2pSellTab" onclick="switchP2PTab('sell')" style="flex: 1;">🔴
+                            Sell NCH</button>
+                    </div>
+
+                    <!-- P2P Order List -->
+                    <div id="p2pOrderList">
+                        <div class="pool-item" style="grid-template-columns: 1fr 1fr 1fr 1fr auto;">
+                            <div class="pool-pair">
+                                <span style="font-weight: 600;">Seller123</span>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Price</div>
+                                <div class="pool-stat-value">$1.02</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Available</div>
+                                <div class="pool-stat-value">500 NCH</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Limit</div>
+                                <div class="pool-stat-value">$10 - $500</div>
+                            </div>
+                            <button class="btn-small" onclick="openP2PTrade('order1')">Buy</button>
+                        </div>
+
+                        <div class="pool-item" style="grid-template-columns: 1fr 1fr 1fr 1fr auto;">
+                            <div class="pool-pair">
+                                <span style="font-weight: 600;">CryptoKing</span>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Price</div>
+                                <div class="pool-stat-value">$1.00</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Available</div>
+                                <div class="pool-stat-value">1,000 NCH</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Limit</div>
+                                <div class="pool-stat-value">$50 - $1000</div>
+                            </div>
+                            <button class="btn-small" onclick="openP2PTrade('order2')">Buy</button>
+                        </div>
+
+                        <div class="pool-item" style="grid-template-columns: 1fr 1fr 1fr 1fr auto;">
+                            <div class="pool-pair">
+                                <span style="font-weight: 600;">CheeseTrader</span>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Price</div>
+                                <div class="pool-stat-value">$0.98</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Available</div>
+                                <div class="pool-stat-value">2,500 NCH</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Limit</div>
+                                <div class="pool-stat-value">$100 - $2500</div>
+                            </div>
+                            <button class="btn-small" onclick="openP2PTrade('order3')">Buy</button>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods Filter -->
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Payment
+                            Methods:</div>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="slippage-btn active" style="font-size: 0.75rem;">All</button>
+                            <button class="slippage-btn" style="font-size: 0.75rem;">💳 Bank</button>
+                            <button class="slippage-btn" style="font-size: 0.75rem;">📱 GCash</button>
+                            <button class="slippage-btn" style="font-size: 0.75rem;">💵 PayPal</button>
+                            <button class="slippage-btn" style="font-size: 0.75rem;">₿ Crypto</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Chart & Stats -->
+        <div class="chart-panel card">
+            <div class="card-header">
+                <h2 class="card-title">📈 NCH / USDT</h2>
+            </div>
+
+            <div class="chart-container" id="priceChart">
+                <span>📊 Price Chart Coming Soon</span>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Price</div>
+                    <div class="stat-value" id="currentPrice">$1.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">24h Change</div>
+                    <div class="stat-value" style="color: var(--success);" id="priceChange">+5.2%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">24h Volume</div>
+                    <div class="stat-value" id="volume24h">$12,450</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Pools</div>
+                    <div class="stat-value" id="totalPools">3</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Liquidity Modal -->
+    <div class="modal-overlay hidden" id="addLiquidityModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add Liquidity</h3>
+                <button class="modal-close" onclick="closeModal('addLiquidityModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="token-input-box">
+                    <div class="token-input-label">
+                        <span id="liquidityToken0">NCH</span>
+                        <span>Balance: <span id="liquidityBalance0">0.00</span></span>
+                    </div>
+                    <div class="token-input-row">
+                        <input type="number" class="token-amount" id="liquidityAmount0" placeholder="0.0">
+                    </div>
+                </div>
+
+                <div style="text-align: center; padding: 0.5rem; color: var(--text-secondary);">+</div>
+
+                <div class="token-input-box">
+                    <div class="token-input-label">
+                        <span id="liquidityToken1">USDT</span>
+                        <span>Balance: <span id="liquidityBalance1">0.00</span></span>
+                    </div>
+                    <div class="token-input-row">
+                        <input type="number" class="token-amount" id="liquidityAmount1" placeholder="0.0">
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem;">
+                    <button class="btn-primary" onclick="addLiquidity()">Add Liquidity</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // ==========================================
+        // CHEESE DEX Frontend JavaScript
+        // ==========================================
+
+        // Use relative URL so it works locally and when deployed
+        const DEX_API_URL = 'https://cheese-dex-production.up.railway.app/api/dex';
+
+        // Secure API key management - load from localStorage or prompt
+        function getAPIKey() {
+            return localStorage.getItem('cheese_api_key') || window.CHEESE_API_KEY || 'demo-key';
+        }
+        const API_KEY = getAPIKey();
+
+        let userWallet = null;
+        let currentSlippage = 0.5; // 0.5% default
+        let fromToken = 'NCH';
+        let toToken = 'USDT';
+
+        // Token configurations - Supported swap tokens: NCH, wNCH, USDT
+        const tokens = {
+            // CHEESE Blockchain Native Tokens (supported for swap)
+            NCH: { symbol: 'NCH', name: 'Native CHEESE Coin', icon: '🧀', logo: 'nch-logo.png', color: '#FFD700', swappable: true },
+            wNCH: { symbol: 'wNCH', name: 'Wrapped NCH (BSC)', icon: '🧀', logo: 'nch-logo.png', color: '#FFD700', bscContract: '0xDaE22388a4827F2769E8694991a641e6A4Dd0e80', swappable: true },
+
+            // Stablecoins
+            USDT: { symbol: 'USDT', name: 'Tether USD', icon: '💵', logo: 'usdt-logo.png', color: '#26A17B', swappable: true },
+
+            // Layer 1 Blockchains
+            BTC: { symbol: 'BTC', name: 'Bitcoin', icon: '₿', logo: 'btc-logo.png', color: '#F7931A' },
+            ETH: { symbol: 'ETH', name: 'Ethereum', icon: '💎', logo: 'eth-logo.png', color: '#627EEA' },
+            BNB: { symbol: 'BNB', name: 'BNB Chain', icon: '🔶', logo: 'bnb-logo.png', color: '#F0B90B' },
+            SOL: { symbol: 'SOL', name: 'Solana', icon: '◎', logo: 'sol-logo.png', color: '#9945FF' },
+            XRP: { symbol: 'XRP', name: 'Ripple', icon: '✕', logo: 'xrp-logo.png', color: '#23292F' },
+            ADA: { symbol: 'ADA', name: 'Cardano', icon: '₳', logo: 'ada-logo.png', color: '#0033AD' },
+            AVAX: { symbol: 'AVAX', name: 'Avalanche', icon: '🔺', logo: 'avax-logo.png', color: '#E84142' },
+            DOT: { symbol: 'DOT', name: 'Polkadot', icon: '●', logo: 'dot-logo.png', color: '#E6007A' },
+            ATOM: { symbol: 'ATOM', name: 'Cosmos', icon: '⚛', logo: 'atom-logo.png', color: '#2E3148' },
+            TON: { symbol: 'TON', name: 'Toncoin', icon: '💠', logo: 'ton-logo.png', color: '#0088CC' },
+            TRX: { symbol: 'TRX', name: 'TRON', icon: '⚡', logo: 'trx-logo.png', color: '#FF0013' },
+            XLM: { symbol: 'XLM', name: 'Stellar', icon: '🚀', logo: 'xlm-logo.png', color: '#14B6E7' },
+            NEAR: { symbol: 'NEAR', name: 'NEAR Protocol', icon: '🌐', logo: null, color: '#00EC97' },
+
+            // Layer 2
+            MATIC: { symbol: 'MATIC', name: 'Polygon', icon: '⬡', logo: 'matic-logo.png', color: '#8247E5' },
+            ARB: { symbol: 'ARB', name: 'Arbitrum', icon: '🔵', logo: 'arb-logo.png', color: '#28A0F0' },
+
+            // Meme Coins
+            DOGE: { symbol: 'DOGE', name: 'Dogecoin', icon: '🐕', logo: 'doge-logo.png', color: '#C2A633' },
+            SHIB: { symbol: 'SHIB', name: 'Shiba Inu', icon: '🐕‍🦺', logo: 'shib-logo.png', color: '#FFA409' },
+            PEPE: { symbol: 'PEPE', name: 'Pepe', icon: '🐸', logo: 'pepe-logo.png', color: '#3D9900' },
+
+            // DeFi
+            LINK: { symbol: 'LINK', name: 'Chainlink', icon: '🔗', logo: 'link-logo.png', color: '#2A5ADA' },
+            UNI: { symbol: 'UNI', name: 'Uniswap', icon: '🦄', logo: 'uni-logo.png', color: '#FF007A' },
+
+            // Classic
+            LTC: { symbol: 'LTC', name: 'Litecoin', icon: 'Ł', logo: 'ltc-logo.png', color: '#345D9D' }
+        };
+
+        // ==========================================
+        // WALLET CONNECTION
+        // ==========================================
+
+        let walletType = null; // 'metamask' or 'cheese'
+
+        async function connectWallet() {
+            // Show wallet selection modal
+            showWalletModal();
+        }
+
+        function showWalletModal() {
+            const walletProviders = [
+                { id: 'cheese', name: 'CHEESE Wallet', icon: '🧀', url: 'https://cheese-tree-network.web.app', highlight: true },
+                { id: 'metamask', name: 'MetaMask', icon: '🦊', url: 'https://metamask.io/download/' },
+                { id: 'trust', name: 'Trust Wallet', icon: '🛡️', url: 'https://trustwallet.com/download' },
+                { id: 'binance', name: 'Binance Wallet', icon: '🔶', url: 'https://www.bnbchain.org/en/binance-wallet' },
+                { id: 'bitget', name: 'Bitget Wallet', icon: '💎', url: 'https://web3.bitget.com/' },
+                { id: 'tokenpocket', name: 'TokenPocket', icon: '🪙', url: 'https://www.tokenpocket.pro/' }
+            ];
+
+            const walletButtons = walletProviders.map(w => `
+                <button class="wallet-option" onclick="selectWallet('${w.id}', '${w.url}')" 
+                    style="width: 100%; padding: 1rem; margin-bottom: 0.75rem; border-radius: 12px; 
+                    border: ${w.highlight ? '2px solid var(--cheese-gold)' : '1px solid var(--border-color)'}; 
+                    background: ${w.highlight ? 'rgba(255,215,0,0.1)' : 'var(--bg-card)'}; color: white; 
+                    cursor: pointer; display: flex; align-items: center; gap: 1rem; font-size: 1rem;
+                    transition: all 0.3s ease; position: relative;">
+                    <span style="font-size: 1.5rem; width: 32px; text-align: center;">${w.icon}</span>
+                    <span style="flex: 1; text-align: left;">${w.name}</span>
+                    ${w.highlight ? '<span style="background: var(--cheese-gold); color: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: bold;">RECOMMENDED</span>' : ''}
+                </button>
+            `).join('');
+
+            const modal = document.createElement('div');
+            modal.id = 'walletModal';
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal" style="max-width: 400px;">
+                    <div class="modal-header">
+                        <h3>🔗 Connect Wallet</h3>
+                        <button class="modal-close" onclick="closeWalletModal()">×</button>
+                    </div>
+                    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+                            Choose your preferred wallet to connect to CHEESE DEX
+                        </p>
+                        ${walletButtons}
+                        <p style="color: var(--text-secondary); font-size: 0.75rem; text-align: center; margin-top: 1rem;">
+                            By connecting, you agree to our Terms of Service
+                        </p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        async function selectWallet(walletId, downloadUrl) {
+            closeWalletModal();
+
+            if (walletId === 'cheese') {
+                await connectCheeseWallet();
+            } else {
+                await connectEVMWallet(walletId, downloadUrl);
+            }
+        }
+
+        async function connectEVMWallet(walletId, downloadUrl) {
+            try {
+                if (typeof window.ethereum === 'undefined') {
+                    showNotification(`Wallet not detected! Please install it.`, 'error');
+                    window.open(downloadUrl, '_blank');
+                    return;
+                }
+
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                if (accounts && accounts.length > 0) {
+                    userWallet = accounts[0];
+                    walletType = walletId;
+
+                    document.getElementById('connectText').textContent =
+                        userWallet.substring(0, 6) + '...' + userWallet.substring(38);
+                    document.getElementById('connectBtn').classList.add('connected');
+
+                    showNotification(`✅ Wallet connected!`, 'success');
+                    loadUserData();
+                }
+            } catch (error) {
+                console.error('Wallet connect error:', error);
+                if (error.code === 4001) {
+                    showNotification('Connection rejected by user', 'error');
+                } else {
+                    showNotification('Failed to connect: ' + error.message, 'error');
+                }
+            }
+        }
+
+        function closeWalletModal() {
+            const modal = document.getElementById('walletModal');
+            if (modal) modal.remove();
+        }
+
+        async function connectMetaMask() {
+            closeWalletModal();
+            try {
+                if (typeof window.ethereum === 'undefined') {
+                    showNotification('MetaMask not installed! Please install MetaMask.', 'error');
+                    window.open('https://metamask.io/download/', '_blank');
+                    return;
+                }
+
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                if (accounts && accounts.length > 0) {
+                    userWallet = accounts[0];
+                    walletType = 'metamask';
+
+                    document.getElementById('connectText').textContent =
+                        userWallet.substring(0, 6) + '...' + userWallet.substring(38);
+                    document.getElementById('connectBtn').classList.add('connected');
+
+                    showNotification('✅ MetaMask connected!', 'success');
+                    loadUserData();
+                }
+            } catch (error) {
+                console.error('MetaMask connect error:', error);
+                showNotification('Failed to connect MetaMask: ' + error.message, 'error');
+            }
+        }
+
+        async function connectCheeseWallet() {
+            closeWalletModal();
+            try {
+                // First check if wallet address came from URL params (redirect flow)
+                const urlParams = new URLSearchParams(window.location.search);
+                const walletFromUrl = urlParams.get('wallet');
+
+                if (walletFromUrl && walletFromUrl.startsWith('0x')) {
+                    // Got wallet from redirect
+                    userWallet = walletFromUrl;
+                    walletType = 'cheese';
+
+                    // Save to localStorage for future use
+                    localStorage.setItem('cheeseWallet', JSON.stringify({ address: walletFromUrl }));
+
+                    // Clean URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+
+                    document.getElementById('connectText').textContent =
+                        userWallet.substring(0, 6) + '...' + userWallet.substring(38);
+                    document.getElementById('connectBtn').classList.add('connected');
+
+                    showNotification('✅ CHEESE Wallet connected!', 'success');
+                    loadUserData();
+                    return;
+                }
+
+                // Check localStorage
+                const savedWallet = localStorage.getItem('cheeseWallet');
+                if (savedWallet) {
+                    const wallet = JSON.parse(savedWallet);
+                    userWallet = wallet.address;
+                    walletType = 'cheese';
+
+                    document.getElementById('connectText').textContent =
+                        userWallet.substring(0, 6) + '...' + userWallet.substring(38);
+                    document.getElementById('connectBtn').classList.add('connected');
+
+                    showNotification('✅ CHEESE Wallet connected!', 'success');
+                    loadUserData();
+                    return;
+                }
+
+                // No wallet found - show manual input modal
+                showWalletInputModal();
+
+            } catch (error) {
+                console.error('CHEESE Wallet connect error:', error);
+                showNotification('Failed to connect CHEESE Wallet', 'error');
+            }
+        }
+
+        function showWalletInputModal() {
+            const modal = document.createElement('div');
+            modal.id = 'walletInputModal';
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal" style="max-width: 420px;">
+                    <div class="modal-header">
+                        <h3>🧀 Connect CHEESE Wallet</h3>
+                        <button class="modal-close" onclick="closeWalletInputModal()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.875rem;">
+                            Enter your CHEESE Wallet address to connect to the DEX
+                        </p>
+                        <input type="text" id="manualWalletAddress" 
+                            placeholder="0x... your wallet address" 
+                            style="width: 100%; padding: 1rem; border-radius: 12px; 
+                            border: 1px solid var(--border-color); background: var(--bg-dark); 
+                            color: white; font-size: 0.875rem; margin-bottom: 1rem;">
+                        <button class="btn-primary" onclick="connectManualWallet()" style="width: 100%;">
+                            🔗 Connect Wallet
+                        </button>
+                        <div style="text-align: center; margin: 1rem 0; color: var(--text-secondary);">or</div>
+                        <button onclick="openCheeseWallet()" style="width: 100%; padding: 1rem; 
+                            border-radius: 12px; border: 1px solid var(--cheese-gold); 
+                            background: rgba(255,215,0,0.1); color: var(--cheese-gold); 
+                            cursor: pointer; font-weight: 600;">
+                            🧀 Open CHEESE Wallet to Get Address
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeWalletInputModal() {
+            const modal = document.getElementById('walletInputModal');
+            if (modal) modal.remove();
+        }
+
+        function openCheeseWallet() {
+            // Open wallet with return URL
+            const returnUrl = encodeURIComponent(window.location.href);
+            window.open(`https://cheese-tree-network.web.app?returnTo=${returnUrl}`, '_blank');
+            showNotification('Copy your wallet address from CHEESE Wallet and paste it here', 'info');
+        }
+
+        async function connectManualWallet() {
+            const address = document.getElementById('manualWalletAddress').value.trim();
+
+            if (!address || !address.startsWith('0x') || address.length !== 42) {
+                showNotification('Please enter a valid wallet address (0x...)', 'error');
+                return;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cheeseWallet', JSON.stringify({ address: address }));
+
+            userWallet = address;
+            walletType = 'cheese';
+
+            document.getElementById('connectText').textContent =
+                userWallet.substring(0, 6) + '...' + userWallet.substring(38);
+            document.getElementById('connectBtn').classList.add('connected');
+
+            closeWalletInputModal();
+            showNotification('✅ CHEESE Wallet connected!', 'success');
+            loadUserData();
+        }
+
+        async function loadUserData() {
+            if (!userWallet) return;
+
+            await loadBalances();
+            await loadPositions();
+        }
+
+        async function loadBalances() {
+            // TODO: Fetch balances from blockchain
+            document.getElementById('fromBalance').textContent = '1000.00';
+            document.getElementById('toBalance').textContent = '500.00';
+        }
+
+        // ==========================================
+        // TOKEN SELECTOR
+        // ==========================================
+
+        let selectingTokenFor = null; // 'from' or 'to'
+
+        function openTokenSelect(direction) {
+            selectingTokenFor = direction;
+
+            const tokenButtons = Object.entries(tokens).map(([symbol, info]) => {
+                const iconHtml = info.logo
+                    ? `<img src="${info.logo}" style="width: 32px; height: 32px; border-radius: 50%;" onerror="this.outerHTML='<span style=\\'font-size: 1.5rem; width: 32px; text-align: center;\\'>${info.icon}</span>'">`
+                    : `<span style="font-size: 1.5rem; width: 32px; text-align: center;">${info.icon}</span>`;
+
+                const isDisabled = (direction === 'from' && symbol === toToken) || (direction === 'to' && symbol === fromToken);
+
+                return `
+                <button class="token-option" onclick="selectToken('${symbol}')" 
+                    style="width: 100%; padding: 1rem; margin-bottom: 0.5rem; border-radius: 12px; 
+                    border: 1px solid var(--border-color); background: var(--bg-card); color: white; 
+                    cursor: ${isDisabled ? 'not-allowed' : 'pointer'}; display: flex; align-items: center; gap: 1rem; font-size: 1rem;
+                    transition: all 0.3s ease; opacity: ${isDisabled ? '0.3' : '1'};"
+                    ${isDisabled ? 'disabled' : ''}>
+                    ${iconHtml}
+                    <div style="text-align: left;">
+                        <div style="font-weight: 600;">${symbol}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">${info.name}</div>
+                    </div>
+                </button>
+            `}).join('');
+
+            const modal = document.createElement('div');
+            modal.id = 'tokenSelectModal';
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal" style="max-width: 400px;">
+                    <div class="modal-header">
+                        <h3>🪙 Select Token</h3>
+                        <button class="modal-close" onclick="closeTokenSelectModal()">×</button>
+                    </div>
+                    <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                        ${tokenButtons}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeTokenSelectModal() {
+            const modal = document.getElementById('tokenSelectModal');
+            if (modal) modal.remove();
+        }
+
+        function selectToken(symbol) {
+            closeTokenSelectModal();
+
+            const tokenInfo = tokens[symbol];
+
+            function updateTokenDisplay(el, info, sym) {
+                const iconEl = el.querySelector('.token-icon');
+                if (info.logo) {
+                    iconEl.innerHTML = `<img src="${info.logo}" style="width: 24px; height: 24px; border-radius: 50%;">`;
+                } else {
+                    iconEl.textContent = info.icon;
+                }
+                el.querySelector('.token-symbol').textContent = sym;
+            }
+
+            if (selectingTokenFor === 'from') {
+                fromToken = symbol;
+                updateTokenDisplay(document.getElementById('fromToken'), tokenInfo, symbol);
+            } else {
+                toToken = symbol;
+                updateTokenDisplay(document.getElementById('toToken'), tokenInfo, symbol);
+            }
+
+            // Get new quote
+            updateQuote();
+        }
+
+        // Load all pools from API
+        async function loadPools() {
+            try {
+                const response = await fetch(`${DEX_API_URL}/pools`);
+                const data = await response.json();
+
+                const container = document.getElementById('poolList');
+
+                if (data.pools && data.pools.length > 0) {
+                    container.innerHTML = data.pools.map(pool => {
+                        const tvl = (pool.reserve0 + pool.reserve1).toLocaleString();
+                        const apr = pool.fees24h > 0 ? ((pool.fees24h * 365 / (pool.reserve0 + pool.reserve1)) * 100).toFixed(1) : '0';
+                        const icon0 = tokens[pool.token0]?.icon || '🪙';
+                        const icon1 = tokens[pool.token1]?.icon || '🪙';
+
+                        return `
+                        <div class="pool-item">
+                            <div class="pool-pair">
+                                <div class="pool-icons">
+                                    <div class="token-icon" style="background: var(--cheese-gold);">${icon0}</div>
+                                    <div class="token-icon" style="background: var(--success);">${icon1}</div>
+                                </div>
+                                <span class="pool-name">${pool.token0} / ${pool.token1}</span>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">TVL</div>
+                                <div class="pool-stat-value">$${tvl}</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">APR</div>
+                                <div class="pool-stat-value">${apr}%</div>
+                            </div>
+                            <button class="btn-small" onclick="openAddLiquidity('${pool.token0}', '${pool.token1}')">Add</button>
+                        </div>
+                    `}).join('');
+                } else {
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No pools found</p>';
+                }
+            } catch (error) {
+                console.error('Load pools error:', error);
+                document.getElementById('poolList').innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Failed to load pools</p>';
+            }
+        }
+
+        // Load pools on page load
+        loadPools();
+
+
+        // ==========================================
+        // TAB NAVIGATION
+        // ==========================================
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active tab button
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Show corresponding content
+                const tabName = btn.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            });
+        });
+
+        // ==========================================
+        // SWAP FUNCTIONS
+        // ==========================================
+
+        async function updateQuote() {
+            const fromAmount = parseFloat(document.getElementById('fromAmount').value) || 0;
+
+            if (fromAmount <= 0) {
+                document.getElementById('toAmount').value = '';
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `${DEX_API_URL}/quote/${fromToken}/${toToken}/${fromAmount}`,
+                    { headers: { 'x-api-key': API_KEY } }
+                );
+                const data = await response.json();
+
+                if (data.success) {
+                    const quote = data.quote;
+                    document.getElementById('toAmount').value = quote.amountOut.toFixed(6);
+                    document.getElementById('swapRate').textContent =
+                        `1 ${fromToken} = ${quote.executionPrice.toFixed(6)} ${toToken}`;
+                    document.getElementById('priceImpact').textContent =
+                        `${quote.priceImpact.toFixed(2)}%`;
+                    document.getElementById('swapFee').textContent =
+                        `${quote.fee.toFixed(6)} ${fromToken}`;
+                    document.getElementById('minReceived').textContent =
+                        `${quote.minimumReceived.toFixed(6)} ${toToken}`;
+                }
+            } catch (error) {
+                console.error('Quote error:', error);
+                // Use simple calculation as fallback
+                const estimatedOut = fromAmount * 0.1; // Placeholder rate
+                document.getElementById('toAmount').value = estimatedOut.toFixed(6);
+            }
+        }
+
+        async function executeSwap() {
+            if (!userWallet) {
+                showNotification('Please connect your wallet', 'error');
+                return;
+            }
+
+            const fromAmount = parseFloat(document.getElementById('fromAmount').value);
+            const toAmount = parseFloat(document.getElementById('toAmount').value);
+            const minAmountOut = toAmount * (1 - currentSlippage / 100);
+
+            if (!fromAmount || fromAmount <= 0) {
+                showNotification('Enter an amount', 'error');
+                return;
+            }
+
+            document.getElementById('swapBtn').disabled = true;
+            document.getElementById('swapBtn').textContent = 'Swapping...';
+
+            try {
+                const response = await fetch(`${DEX_API_URL}/swap`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': API_KEY
+                    },
+                    body: JSON.stringify({
+                        tokenIn: fromToken,
+                        tokenOut: toToken,
+                        amountIn: fromAmount,
+                        minAmountOut: minAmountOut,
+                        userAddress: userWallet
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification(
+                        `✅ Swapped ${data.amountIn} ${fromToken} for ${data.amountOut.toFixed(6)} ${toToken}`,
+                        'success'
+                    );
+                    document.getElementById('fromAmount').value = '';
+                    document.getElementById('toAmount').value = '';
+                    loadBalances();
+                } else {
+                    throw new Error(data.error || 'Swap failed');
+                }
+            } catch (error) {
+                console.error('Swap error:', error);
+                showNotification(`❌ ${error.message}`, 'error');
+            } finally {
+                document.getElementById('swapBtn').disabled = false;
+                document.getElementById('swapBtn').textContent = 'Swap';
+            }
+        }
+
+        function swapTokenPositions() {
+            const temp = fromToken;
+            fromToken = toToken;
+            toToken = temp;
+
+            // Update UI
+            const fromTokenEl = document.getElementById('fromToken');
+            const toTokenEl = document.getElementById('toToken');
+
+            const fromInfo = tokens[fromToken];
+            const toInfo = tokens[toToken];
+
+            fromTokenEl.querySelector('.token-icon').textContent = fromInfo.icon;
+            fromTokenEl.querySelector('.token-symbol').textContent = fromInfo.symbol;
+
+            toTokenEl.querySelector('.token-icon').textContent = toInfo.icon;
+            toTokenEl.querySelector('.token-symbol').textContent = toInfo.symbol;
+
+            // Clear amounts and get new quote
+            document.getElementById('toAmount').value = '';
+            updateQuote();
+        }
+
+        // ==========================================
+        // LIQUIDITY FUNCTIONS
+        // ==========================================
+
+        function openAddLiquidity(token0, token1) {
+            document.getElementById('liquidityToken0').textContent = token0;
+            document.getElementById('liquidityToken1').textContent = token1;
+            document.getElementById('addLiquidityModal').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        async function addLiquidity() {
+            if (!userWallet) {
+                showNotification('Please connect your wallet', 'error');
+                return;
+            }
+
+            const token0 = document.getElementById('liquidityToken0').textContent;
+            const token1 = document.getElementById('liquidityToken1').textContent;
+            const amount0 = parseFloat(document.getElementById('liquidityAmount0').value);
+            const amount1 = parseFloat(document.getElementById('liquidityAmount1').value);
+
+            if (!amount0 || !amount1) {
+                showNotification('Enter amounts for both tokens', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${DEX_API_URL}/liquidity/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': API_KEY
+                    },
+                    body: JSON.stringify({
+                        tokenA: token0,
+                        tokenB: token1,
+                        amountA: amount0,
+                        amountB: amount1,
+                        userAddress: userWallet
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification(
+                        `✅ Added liquidity! LP tokens: ${data.lpTokensMinted.toFixed(6)}`,
+                        'success'
+                    );
+                    closeModal('addLiquidityModal');
+                    loadPositions();
+                } else {
+                    throw new Error(data.error || 'Failed to add liquidity');
+                }
+            } catch (error) {
+                console.error('Add liquidity error:', error);
+                showNotification(`❌ ${error.message}`, 'error');
+            }
+        }
+
+        async function loadPositions() {
+            if (!userWallet) return;
+
+            try {
+                const response = await fetch(
+                    `${DEX_API_URL}/positions/${userWallet}`,
+                    { headers: { 'x-api-key': API_KEY } }
+                );
+                const data = await response.json();
+
+                const container = document.getElementById('positionsList');
+
+                if (data.positions && data.positions.length > 0) {
+                    container.innerHTML = data.positions.map(pos => `
+                        <div class="pool-item">
+                            <div class="pool-pair">
+                                <span class="pool-name">${pos.token0} / ${pos.token1}</span>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">LP Tokens</div>
+                                <div class="pool-stat-value">${pos.lpTokens.toFixed(4)}</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">Share</div>
+                                <div class="pool-stat-value">${pos.share.toFixed(2)}%</div>
+                            </div>
+                            <button class="btn-small" onclick="removeLiquidity('${pos.token0}', '${pos.token1}', ${pos.lpTokens})">Remove</button>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No liquidity positions found</p>';
+                }
+            } catch (error) {
+                console.error('Load positions error:', error);
+            }
+        }
+
+        // ==========================================
+        // BRIDGE FUNCTIONS
+        // ==========================================
+
+        let bridgeDirection = 'nch-to-cheese'; // or 'cheese-to-nch'
+
+        async function updateBridgeRate() {
+            try {
+                // NCH and CHEESE have 1:1 rate on the bridge
+                const rate = '1 NCH = 1 CHEESE (BSC)';
+                document.getElementById('bridgeRate').textContent = rate;
+            } catch (error) {
+                console.error('Bridge rate error:', error);
+                document.getElementById('bridgeRate').textContent = '1 NCH = 1 CHEESE (BSC)';
+            }
+        }
+
+        function setBridgeDirection(direction) {
+            bridgeDirection = direction;
+
+            // Update button states
+            document.getElementById('nchToCheeseBtn').classList.remove('active');
+            document.getElementById('cheeseToNchBtn').classList.remove('active');
+
+            if (direction === 'nch-to-cheese') {
+                document.getElementById('nchToCheeseBtn').classList.add('active');
+                document.getElementById('bridgeFromLabel').textContent = 'From (CHEESE Blockchain)';
+                document.getElementById('bridgeToLabel').textContent = 'To (BSC Network)';
+                document.getElementById('bridgeFromSymbol').textContent = 'NCH';
+                document.getElementById('bridgeToSymbol').textContent = 'CHEESE';
+            } else {
+                document.getElementById('cheeseToNchBtn').classList.add('active');
+                document.getElementById('bridgeFromLabel').textContent = 'From (BSC Network)';
+                document.getElementById('bridgeToLabel').textContent = 'To (CHEESE Blockchain)';
+                document.getElementById('bridgeFromSymbol').textContent = 'CHEESE';
+                document.getElementById('bridgeToSymbol').textContent = 'NCH';
+            }
+
+            updateBridgeQuote();
+        }
+
+        function toggleBridgeDirection() {
+            if (bridgeDirection === 'nch-to-cheese') {
+                setBridgeDirection('cheese-to-nch');
+            } else {
+                setBridgeDirection('nch-to-cheese');
+            }
+        }
+
+        function updateBridgeQuote() {
+            const amount = parseFloat(document.getElementById('bridgeAmount').value) || 0;
+            const fee = amount * 0.005; // 0.5% fee
+            const receive = amount - fee;
+
+            document.getElementById('bridgeReceive').value = receive > 0 ? receive.toFixed(6) : '';
+            document.getElementById('bridgeFee').textContent = fee.toFixed(6);
+        }
+
+        async function executeBridge() {
+            if (!userWallet) {
+                showNotification('Please connect your wallet', 'error');
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('bridgeAmount').value);
+            const destAddress = document.getElementById('bridgeDestAddress').value;
+
+            if (!amount || amount <= 0) {
+                showNotification('Enter an amount to bridge', 'error');
+                return;
+            }
+
+            if (!destAddress || !destAddress.startsWith('0x')) {
+                showNotification('Enter a valid destination address', 'error');
+                return;
+            }
+
+            document.getElementById('bridgeBtn').disabled = true;
+            document.getElementById('bridgeBtn').textContent = '🔄 Bridging...';
+
+            try {
+                const response = await fetch(`${DEX_API_URL}/bridge`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': API_KEY
+                    },
+                    body: JSON.stringify({
+                        from: userWallet,
+                        to: destAddress,
+                        amount: amount,
+                        direction: bridgeDirection
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification(
+                        `✅ Bridge initiated! TxHash: ${data.txHash?.substring(0, 10)}...`,
+                        'success'
+                    );
+                    document.getElementById('bridgeAmount').value = '';
+                    document.getElementById('bridgeReceive').value = '';
+                } else {
+                    throw new Error(data.error || 'Bridge failed');
+                }
+            } catch (error) {
+                console.error('Bridge error:', error);
+                showNotification(`❌ ${error.message}`, 'error');
+            } finally {
+                document.getElementById('bridgeBtn').disabled = false;
+                document.getElementById('bridgeBtn').textContent = '🌉 Bridge Tokens';
+            }
+        }
+
+        // ==========================================
+        // POOL FUNCTIONS
+        // ==========================================
+
+        async function loadPools() {
+            try {
+                const response = await fetch(
+                    `${DEX_API_URL}/pools`,
+                    { headers: { 'x-api-key': API_KEY } }
+                );
+                const data = await response.json();
+
+                if (data.success && data.pools) {
+                    // Update total pools count in stats
+                    document.getElementById('totalPools').textContent = data.pools.length;
+
+                    const container = document.getElementById('poolList');
+                    container.innerHTML = data.pools.map(pool => `
+                        <div class="pool-item">
+                            <div class="pool-pair">
+                                <div class="pool-icons">
+                                    <div class="token-icon" style="background: ${tokens[pool.token0]?.color || '#666'};">${tokens[pool.token0]?.icon || '🔷'}</div>
+                                    <div class="token-icon" style="background: ${tokens[pool.token1]?.color || '#666'};">${tokens[pool.token1]?.icon || '🔷'}</div>
+                                </div>
+                                <span class="pool-name">${pool.token0} / ${pool.token1}</span>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">TVL</div>
+                                <div class="pool-stat-value">$${pool.stats?.tvl?.toLocaleString() || 0}</div>
+                            </div>
+                            <div class="pool-stat">
+                                <div class="pool-stat-label">APR</div>
+                                <div class="pool-stat-value">${pool.stats?.apr?.toFixed(2) || 0}%</div>
+                            </div>
+                            <button class="btn-small" onclick="openAddLiquidity('${pool.token0}', '${pool.token1}')">Add</button>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Load pools error:', error);
+            }
+        }
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+
+        function toggleSettings() {
+            document.getElementById('slippageSettings').classList.toggle('hidden');
+        }
+
+        document.querySelectorAll('.slippage-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.slippage-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentSlippage = parseFloat(btn.dataset.slippage);
+                updateQuote();
+            });
+        });
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+
+        // Global market prices cache
+        let marketPrices = {};
+
+        async function loadMarketPrices() {
+            try {
+                const response = await fetch(`${DEX_API_URL}/market-prices`);
+                const data = await response.json();
+                if (data.success) {
+                    marketPrices = data.prices;
+                    console.log('📊 Market prices loaded:', {
+                        BTC: marketPrices.BTC?.usd || 'N/A',
+                        ETH: marketPrices.ETH?.usd || 'N/A',
+                        NCH: marketPrices.NCH || 1,
+                        CHEESE: marketPrices.CHEESE || 0.1
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load market prices:', error);
+            }
+        }
+
+        // Get price for a token
+        function getTokenPrice(symbol) {
+            const price = marketPrices[symbol];
+            if (!price) return 0;
+            return typeof price === 'number' ? price : price.usd || 0;
+        }
+
+        // ==========================================
+        // CONVERT BSC TOKENS TO wNCH
+        // ==========================================
+
+        function toggleConvertTokenDropdown() {
+            const dropdown = document.getElementById('convertTokenDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function selectConvertToken(symbol, iconSrc) {
+            document.getElementById('convertFromToken').value = symbol;
+            document.getElementById('convertSelectedSymbol').textContent = symbol;
+            document.getElementById('convertSelectedIcon').src = iconSrc;
+            document.getElementById('convertTokenDropdown').classList.add('hidden');
+            updateConvertQuote();
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('convertTokenDropdown');
+            const selector = document.getElementById('convertTokenSelector');
+            if (dropdown && selector && !selector.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        async function updateConvertQuote() {
+            const amount = parseFloat(document.getElementById('convertAmount').value) || 0;
+            const token = document.getElementById('convertFromToken').value;
+
+            if (amount <= 0) {
+                document.getElementById('convertToAmount').value = '';
+                document.getElementById('convertLivePrice').textContent = '$0.00';
+                document.getElementById('convertRate').textContent = `1 ${token} = 0 wNCH`;
+                document.getElementById('convertUsdValue').textContent = '$0.00';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${DEX_API_URL}/convert/quote?token=${token}&amount=${amount}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('convertToAmount').value = data.toAmount.toFixed(4);
+                    document.getElementById('convertLivePrice').textContent = `$${data.fromPriceUSD.toFixed(2)}`;
+                    document.getElementById('convertRate').textContent = `1 ${token} = ${data.rate.toFixed(4)} wNCH`;
+                    document.getElementById('convertUsdValue').textContent = `$${data.usdValue.toFixed(2)}`;
+                } else {
+                    console.error('Convert quote error:', data.error);
+                    showNotification(`Could not get price for ${token}`, 'error');
+                }
+            } catch (error) {
+                console.error('Convert quote fetch error:', error);
+            }
+        }
+
+        async function executeConvert() {
+            const amount = parseFloat(document.getElementById('convertAmount').value) || 0;
+            const token = document.getElementById('convertFromToken').value;
+
+            if (amount <= 0) {
+                showNotification('Enter an amount to convert', 'error');
+                return;
+            }
+
+            if (!connectedWallet) {
+                showNotification('Connect your wallet first', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('convertBtn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Converting...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${DEX_API_URL}/convert`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': API_KEY
+                    },
+                    body: JSON.stringify({
+                        fromToken: token,
+                        amount: amount,
+                        userAddress: connectedWallet
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification(`✅ Converted ${amount} ${token} to ${data.toAmount.toFixed(4)} wNCH!`, 'success');
+                    document.getElementById('convertAmount').value = '';
+                    document.getElementById('convertToAmount').value = '';
+                } else {
+                    showNotification(`Convert failed: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                console.error('Convert error:', error);
+                showNotification('Conversion failed. Please try again.', 'error');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Initialize Convert quote when token changes
+        document.getElementById('convertFromToken')?.addEventListener('change', updateConvertQuote);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🧀 CHEESE DEX loaded');
+            loadPools();
+            loadMarketPrices(); // Load real market prices
+
+            // Refresh prices every 60 seconds
+            setInterval(loadMarketPrices, 60000);
+
+            // Register service worker for PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('✅ Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            }
+
+            // Initialize bridge rate
+            updateBridgeRate();
+
+            // Initialize convert quote
+            updateConvertQuote();
+
+            // Auto-connect if wallet exists
+            const walletData = localStorage.getItem('cheeseWallet');
+            if (walletData) {
+                connectWallet();
+            }
+        });
+
+        // ==========================================
+        // P2P TRADING FUNCTIONS
+        // ==========================================
+
+        function switchP2PTab(type) {
+            const buyTab = document.getElementById('p2pBuyTab');
+            const sellTab = document.getElementById('p2pSellTab');
+
+            if (type === 'buy') {
+                buyTab.classList.add('active');
+                buyTab.style.background = 'var(--success)';
+                buyTab.style.color = '#000';
+                sellTab.classList.remove('active');
+                sellTab.style.background = '';
+                sellTab.style.color = '';
+            } else {
+                sellTab.classList.add('active');
+                sellTab.style.background = 'var(--error)';
+                sellTab.style.color = '#fff';
+                buyTab.classList.remove('active');
+                buyTab.style.background = '';
+                buyTab.style.color = '';
+            }
+
+            // Update button text in order list
+            const buttons = document.querySelectorAll('#p2pOrderList .btn-small');
+            buttons.forEach(btn => {
+                btn.textContent = type === 'buy' ? 'Buy' : 'Sell';
+            });
+        }
+
+        function openCreateP2POrder() {
+            if (!userWallet) {
+                showNotification('Please connect your wallet first', 'error');
+                return;
+            }
+            showNotification('P2P order creation coming soon!', 'success');
+        }
+
+        function openP2PTrade(orderId) {
+            if (!userWallet) {
+                showNotification('Please connect your wallet to trade', 'error');
+                return;
+            }
+            showNotification(`Opening trade for order ${orderId}...`, 'success');
+        }
+    </script>
+    <canvas id="bgCanvas"></canvas>
+
+    <script>
+        // Particle System
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > width) this.x = 0;
+                if (this.x < 0) this.x = width;
+                if (this.y > height) this.y = 0;
+                if (this.y < 0) this.y = height;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(255, 215, 0, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        initParticles();
+        animateParticles();
+    </script>
+
+    <!-- PWA Install Detection Script -->
+    <script>
+        // PWA Install Prompt for DEX
+        let deferredPrompt = null;
+
+        // Check if app is already installed
+        const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true;
+
+        // Check if user dismissed the banner recently (24 hours)
+        const dismissedAt = localStorage.getItem('dex-pwa-dismissed');
+        const wasDismissedRecently = dismissedAt && (Date.now() - parseInt(dismissedAt)) < 24 * 60 * 60 * 1000;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // Show banner only if not installed and not dismissed recently
+            if (!isAppInstalled && !wasDismissedRecently) {
+                setTimeout(() => {
+                    const banner = document.getElementById('pwa-install-banner');
+                    if (banner) banner.style.display = 'block';
+                }, 5000); // Show after 5 seconds on DEX
+            }
+        });
+
+        // Install button click
+        document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const result = await deferredPrompt.userChoice;
+                console.log('DEX PWA install result:', result.outcome);
+                deferredPrompt = null;
+            }
+            document.getElementById('pwa-install-banner').style.display = 'none';
+        });
+
+        // Dismiss button click
+        document.getElementById('pwa-dismiss-btn')?.addEventListener('click', () => {
+            document.getElementById('pwa-install-banner').style.display = 'none';
+            localStorage.setItem('dex-pwa-dismissed', Date.now().toString());
+        });
+
+        // Hide banner if app gets installed
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('pwa-install-banner').style.display = 'none';
+            console.log('🎉 CHEESE DEX installed!');
+        });
+    </script>
+</body>
+
+</html>
